@@ -145,6 +145,135 @@ For discrete actions:
 
 ## Policy Networks
 
+> Note: policy in CS3 and in RL are not of the same meaning.
+
+There are two main pars:
+- Features extractor: usually shared between actor and critic. `features_extractor_class` parameter
+- A fully-connected network from features to actions/value. `net_arch` parameter
+
+<img src="pics/net_arch.png" width="700">
+<img src="pics/net_arch_2.png" width="700">
+
+You can print the policy of every model with `policy.model`.
+```python
+import gymnasium as gym
+from stable_baselines3 import PPO
+env_id = "CartPole-v1"
+env = gym.make(env_id, render_mode="human")
+model = PPO("MlpPolicy", env, verbose=1)
+print(model.policy)
+```
+
+By default, for 1D obs space, a 2 fully connected net is used:
+- PPO/A2C/DQN: 64 units per layer
+- SAC: 256 units
+- TD3/DDPG: \[400,300\] units
+
+### Custom NNs
+
+- Custom Network Archs - `policy_kwargs` parameter:
+```python
+policy_kwargs = dict(activation_fn=torch.nn.ReLU,
+                     net_arch=dict(pi=[32, 32], vf=[32, 32]))
+# Create the agent
+model = PPO("MlpPolicy", "CartPole-v1", policy_kwargs=policy_kwargs, verbose=1)
+```
+
+- Custom Feature Extractor - `BaseFeaturesExtractor` class
+- Multiple Inputs and Dictionary Obs - `BaseFeaturesExtractor` class
+
+Examples of `net_arch`:
+- `net_arch=[128, 128]`
+
+<img src="pics/n_ex_1.png" width="700">
+
+- `net_arch=dict(pi=[32, 32], vf=[64, 64])`
+
+<img src="pics/n_ex_2.png" width="700">
+
+- Every algorithm is different if has shared or unshared parameters and is different in other ways. Please examine the Docs before implementing.
+
+
+## Using Custom Envs
+
+To use SB3 with a custom env just adapt it to _gymnasium_ interface.
+
+- by default the obs is normalized by SB3-preprocessing to be between \[0,1\], i.e. `Box(low=0, high=1)`
+- if you do not need a normalization, do `policy_kwargs=dict(normalize_images=False)`
+- Make sure that the image is in **channel-first** format
+
+The sceleton for the custom env:
+```python
+import gymnasium as gym
+import numpy as np
+from gymnasium import spaces
+
+
+class CustomEnv(gym.Env):
+    """Custom Environment that follows gym interface."""
+
+    metadata = {"render_modes": ["human"], "render_fps": 30}
+
+    def __init__(self, arg1, arg2, ...):
+        super().__init__()
+        # Define action and observation space
+        # They must be gym.spaces objects
+        # Example when using discrete actions:
+        self.action_space = spaces.Discrete(N_DISCRETE_ACTIONS)
+        # Example for using image as input (channel-first; channel-last also works):
+        self.observation_space = spaces.Box(low=0, high=255,
+                                            shape=(N_CHANNELS, HEIGHT, WIDTH), dtype=np.uint8)
+
+    def step(self, action):
+        ...
+        return observation, reward, terminated, truncated, info
+
+    def reset(self, seed=None, options=None):
+        ...
+        return observation, info
+
+    def render(self):
+        ...
+
+    def close(self):
+        ...
+```
+
+Check the env:
+```python
+from stable_baselines3.common.env_checker import check_env
+env = CustomEnv(arg1, ...)
+# It will check your custom environment and output additional warnings if needed
+check_env(env)
+```
+
+Then use an RL alg:
+```python
+# Instantiate the env
+env = CustomEnv(arg1, ...)
+# Define and Train the agent
+model = A2C("CnnPolicy", env).learn(total_timesteps=1000)
+```
+
+Optionally, you can also register the env with gym, this allows to create the RL agent in one line:
+```python
+from gymnasium.envs.registration import register
+# Example for the CartPole environment
+register(
+    # unique identifier for the env `name-version`
+    id="CartPole-v1",
+    # path to the class for creating the env
+    # Note: entry_point also accept a class as input (and not only a string)
+    entry_point="gym.envs.classic_control:CartPoleEnv",
+    # Max number of steps per episode, using a `TimeLimitWrapper`
+    max_episode_steps=500,
+)
+```
+
+
+## Callbacks
+
+
 
 
 
