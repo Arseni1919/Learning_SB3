@@ -3,13 +3,13 @@
 ## Contents
 - [Getting Started](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#getting-started)
 - [Reinforcement Learning Tips and Tricks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#reinforcement-learning-tips-and-tricks)
-    - General advice when using Reinforcement Learning
-    - Tips and Tricks when creating a custom environment
-    - Tips and Tricks when implementing an RL algorithm
+    - [General advice when using Reinforcement Learning](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#general-advice-when-using-reinforcement-learning)
+    - [Tips and Tricks when creating a custom environment](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#tips-and-tricks-when-creating-a-custom-environment)
+    - [Tips and Tricks when implementing an RL algorithm](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#tips-and-tricks-when-implementing-an-rl-algorithm)
 - [Examples of SB3 Usage](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#examples-of-sb3-usage)
 - [Vectorised Environments](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#vectorised-environments)
 - [Policy Networks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#policy-networks)
-    - Custom NNs
+    - [Custom NNs](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#custom-nns)
 - [Using Custom Envs](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#using-custom-envs)
 - [Callbacks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#callbacks)
 - [Tensorboard Integration](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#tensorboard-integration)
@@ -18,6 +18,8 @@
 - [Credits](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#credits)
 
 ## Getting Started
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 Example run:
 ```python
@@ -85,6 +87,8 @@ for i in range(1000):
 ```
 
 ## Reinforcement Learning Tips and Tricks
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 ### General advice when using Reinforcement Learning
 
@@ -167,6 +171,8 @@ For discrete actions:
 
 ## Policy Networks
 
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
+
 > Note: policy in CS3 and in RL are not of the same meaning.
 
 There are two main pars:
@@ -217,6 +223,8 @@ Examples of `net_arch`:
 
 
 ## Using Custom Envs
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 To use SB3 with a custom env just adapt it to _gymnasium_ interface.
 
@@ -294,6 +302,8 @@ register(
 
 
 ## Callbacks
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 Callbacks is a set of functions that will be called at given stages of the training procedure. They are for monitoring, auto saving, model manipulation, progress bars, etc.
 
@@ -396,9 +406,13 @@ model.learn(int(1e10), callback=eval_callback)
 
 ## Tensorboard Integration
 
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
+
 [Tensorboard Integration](https://stable-baselines3.readthedocs.io/en/master/guide/tensorboard.html#tensorboard-integration)
 
 ## Hugging Face 🤗 Integration
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 [HF Hub | SB3's official pretrained models](https://huggingface.co/sb3)
 
@@ -504,12 +518,16 @@ push_to_hub(
 
 ## Imitation Learning 
 
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
+
 - [SB3 | imitation learning](https://stable-baselines3.readthedocs.io/en/master/guide/imitation.html)
 - [Imitation docs](https://imitation.readthedocs.io/en/latest/#)
 
 
 
 ## Credits
+
+[(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
 
 To cite them:
 ```bib
