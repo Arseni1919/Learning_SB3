@@ -273,11 +273,217 @@ register(
 
 ## Callbacks
 
+Callbacks is a set of functions that will be called at given stages of the training procedure. They are for monitoring, auto saving, model manipulation, progress bars, etc.
+
+A custom callback:
+```python
+from stable_baselines3.common.callbacks import BaseCallback
+
+class CustomCallback(BaseCallback):
+    """
+    A custom callback that derives from ``BaseCallback``.
+
+    :param verbose: Verbosity level: 0 for no output, 1 for info messages, 2 for debug messages
+    """
+    def __init__(self, verbose: int = 0):
+        super().__init__(verbose)
+        # Those variables will be accessible in the callback
+        # (they are defined in the base class)
+        # The RL model
+        # self.model = None  # type: BaseAlgorithm
+        # An alias for self.model.get_env(), the environment used for training
+        # self.training_env # type: VecEnv
+        # Number of time the callback was called
+        # self.n_calls = 0  # type: int
+        # num_timesteps = n_envs * n times env.step() was called
+        # self.num_timesteps = 0  # type: int
+        # local and global variables
+        # self.locals = {}  # type: Dict[str, Any]
+        # self.globals = {}  # type: Dict[str, Any]
+        # The logger object, used to report things in the terminal
+        # self.logger # type: stable_baselines3.common.logger.Logger
+        # Sometimes, for event callback, it is useful
+        # to have access to the parent object
+        # self.parent = None  # type: Optional[BaseCallback]
+
+    def _on_training_start(self) -> None:
+        """
+        This method is called before the first rollout starts.
+        """
+        pass
+
+    def _on_rollout_start(self) -> None:
+        """
+        A rollout is the collection of environment interaction
+        using the current policy.
+        This event is triggered before collecting new samples.
+        """
+        pass
+
+    def _on_step(self) -> bool:
+        """
+        This method will be called by the model after each call to `env.step()`.
+
+        For child callback (of an `EventCallback`), this will be called
+        when the event is triggered.
+
+        :return: If the callback returns False, training is aborted early.
+        """
+        return True
+
+    def _on_rollout_end(self) -> None:
+        """
+        This event is triggered before updating the policy.
+        """
+        pass
+
+    def _on_training_end(self) -> None:
+        """
+        This event is triggered before exiting the `learn()` method.
+        """
+        pass
+```
+
+A list of existing SB3 callbacks:
+- saving the model periodically (`CheckpointCallback`)
+- evaluating the model periodically and saving the best one (`EvalCallback`)
+- chaining callbacks (`CallbackList`)
+- triggering callback on events (`EventCallback`, `EveryNTimesteps`)
+- logging data every N timesteps (`LogEveryNTimesteps`)
+- stopping the training early based on a reward threshold (`StopTrainingOnRewardThreshold`)
+
+Example:
+```python
+import gymnasium as gym
+
+from stable_baselines3 import SAC
+from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnNoModelImprovement
+
+# Separate evaluation env
+eval_env = gym.make("Pendulum-v1")
+# Stop training if there is no improvement after more than 3 evaluations
+stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=3, min_evals=5, verbose=1)
+eval_callback = EvalCallback(eval_env, eval_freq=1000, callback_after_eval=stop_train_callback, verbose=1)
+
+model = SAC("MlpPolicy", "Pendulum-v1", learning_rate=1e-3, verbose=1)
+# Almost infinite number of timesteps, but the training will stop early
+# as soon as the the number of consecutive evaluations without model
+# improvement is greater than 3
+model.learn(int(1e10), callback=eval_callback)
+```
+
+## Tensorboard Integration
+
+[Tensorboard Integration](https://stable-baselines3.readthedocs.io/en/master/guide/tensorboard.html#tensorboard-integration)
+
+## Hugging Face 🤗 Integration
+
+[HF Hub | SB3's official pretrained models](https://huggingface.co/sb3)
+
+```bash
+pip install huggingface_sb3
+```
+
+Downloading a model from the Hub:
+```python
+import os
+import gymnasium as gym
+from huggingface_sb3 import load_from_hub
+from stable_baselines3 import PPO
+from stable_baselines3.common.evaluation import evaluate_policy
+
+# Allow the use of `pickle.load()` when downloading model from the hub
+# Please make sure that the organization from which you download can be trusted
+os.environ["TRUST_REMOTE_CODE"] = "True"
+
+# Retrieve the model from the hub
+## repo_id = id of the model repository from the Hugging Face Hub (repo_id = {organization}/{repo_name})
+## filename = name of the model zip file from the repository
+checkpoint = load_from_hub(
+    repo_id="sb3/demo-hf-CartPole-v1",
+    filename="ppo-CartPole-v1.zip",
+)
+model = PPO.load(checkpoint)
+
+# Evaluate the agent and watch it
+eval_env = gym.make("CartPole-v1")
+mean_reward, std_reward = evaluate_policy(
+    model, eval_env, render=True, n_eval_episodes=5, deterministic=True, warn=False
+)
+print(f"mean_reward={mean_reward:.2f} +/- {std_reward}")
+```
+
+You can easily upload your models using two different functions:
+
+- `package_to_hub()`: save the model, evaluate it, generate a model card and record a replay video of your agent before pushing the complete repo to the Hub.
+
+- `push_to_hub()`: simply push a file to the Hub.
+
+Uploading a model to the Hub with `package_to_hub()`:
+```python
+from stable_baselines3 import PPO
+from stable_baselines3.common.env_util import make_vec_env
+from huggingface_sb3 import package_to_hub
+
+# Create the environment
+env_id = "CartPole-v1"
+env = make_vec_env(env_id, n_envs=1)
+
+# Create the evaluation environment
+eval_env = make_vec_env(env_id, n_envs=1)
+
+# Instantiate the agent
+model = PPO("MlpPolicy", env, verbose=1)
+
+# Train the agent
+model.learn(total_timesteps=int(5000))
+
+# This method save, evaluate, generate a model card and record a replay video of your agent before pushing the repo to the hub
+package_to_hub(model=model,
+             model_name="ppo-CartPole-v1",
+             model_architecture="PPO",
+             env_id=env_id,
+             eval_env=eval_env,
+             repo_id="sb3/demo-hf-CartPole-v1",
+             commit_message="Test commit")
+```
+
+Uploading a model to the Hub with `push_to_hub()`:
+
+```python
+from stable_baselines3 import PPO
+from stable_baselines3.common.env_util import make_vec_env
+from huggingface_sb3 import push_to_hub
+
+# Create the environment
+env_id = "CartPole-v1"
+env = make_vec_env(env_id, n_envs=1)
+
+# Instantiate the agent
+model = PPO("MlpPolicy", env, verbose=1)
+
+# Train the agent
+model.learn(total_timesteps=int(5000))
+
+# Save the model
+model.save("ppo-CartPole-v1")
+
+# Push this saved model .zip file to the hf repo
+# If this repo does not exists it will be created
+## repo_id = id of the model repository from the Hugging Face Hub (repo_id = {organization}/{repo_name})
+## filename: the name of the file == "name" inside model.save("ppo-CartPole-v1")
+push_to_hub(
+  repo_id="sb3/demo-hf-CartPole-v1",
+  filename="ppo-CartPole-v1.zip",
+  commit_message="Added CartPole-v1 model trained with PPO",
+)
+```
 
 
+## Imitation Learning 
 
-
-
+- [SB3 | imitation learning](https://stable-baselines3.readthedocs.io/en/master/guide/imitation.html)
+- [Imitation docs](https://imitation.readthedocs.io/en/latest/#)
 
 
 
