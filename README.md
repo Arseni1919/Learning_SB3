@@ -1,5 +1,21 @@
 # Learning Stable-Baselines3 - Reliable Reinforcement Learning Implementations
 
+## Contents
+- [Getting Started](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#getting-started)
+- [Reinforcement Learning Tips and Tricks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#reinforcement-learning-tips-and-tricks)
+    - General advice when using Reinforcement Learning
+    - Tips and Tricks when creating a custom environment
+    - Tips and Tricks when implementing an RL algorithm
+- [Examples of SB3 Usage](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#examples-of-sb3-usage)
+- [Vectorised Environments](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#vectorised-environments)
+- [Policy Networks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#policy-networks)
+    - Custom NNs
+- [Using Custom Envs](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#using-custom-envs)
+- [Callbacks](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#callbacks)
+- [Tensorboard Integration](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#tensorboard-integration)
+- [Hugging Face 🤗 Integration](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#hugging-face--integration)
+- [Imitation Learning](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#imitation-learning)
+- [Credits](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#credits)
 
 ## Getting Started
 
