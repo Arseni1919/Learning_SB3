@@ -523,8 +523,6 @@ push_to_hub(
 - [SB3 | imitation learning](https://stable-baselines3.readthedocs.io/en/master/guide/imitation.html)
 - [Imitation docs](https://imitation.readthedocs.io/en/latest/#)
 
-
-
 ## Credits
 
 [(back to contents)](https://github.com/Arseni1919/Learning_SB3?tab=readme-ov-file#contents)
