@@ -72,9 +72,15 @@ for i in range(1000):
 
 ### General advice when using Reinforcement Learning
 
+- Run the small problems. For example, with the pendulum problem you can see exactly the value function / policy / etc. in 3D.
 - Do hyperparameter tuning.
+- Shape the reward function or give a good inputs parameters to se 'sign of life'.
+- use more samples than you think you need
+- remember: simplicity $\rightarrow$ generalization
+- Automate your experiment pipelines
 - Normalize action and observation spaces, best between -1 and 1.
-- Reward is important.
+- Standardize as well
+- use entropy, look at the current entropy situation during the training
 - Good results in RL are mostly due to finding appropriate hyperparameters for the algorithm.
 - In RL Zoo, the framework can also tune hyperparameters for you!
 - Model-free RL methods (all methods in SB3) are very sample inefficient - use a bigger training budget.
@@ -502,3 +508,6 @@ To cite them:
   url     = {http://jmlr.org/papers/v22/20-1364.html}
 }
 ```
+
+- [Stable-Baselines3 Docs - Reliable Reinforcement Learning Implementations](https://stable-baselines3.readthedocs.io/en/master/index.html#)
+- [Deep RL Bootcamp Lecture 6: Nuts and Bolts of Deep RL Experimentation](https://www.youtube.com/watch?v=8EcdaCk9KaQ)
